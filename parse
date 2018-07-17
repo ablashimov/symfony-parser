@@ -1,0 +1,21 @@
+#!/usr/bin/env php
+<?php
+
+use App\Application;
+use App\Commands\Parse;
+use App\Services\DownloadService;
+use App\Services\FileWriterService;
+use App\Services\UnzipService;
+use App\Services\ParseService;
+use GuzzleHttp\Client;
+
+
+require __DIR__ . '/vendor/autoload.php';
+
+$app = new Application;
+
+$app->add(new Parse(null, new DownloadService(new Client()), new FileWriterService(), new UnzipService(), new ParseService()));
+
+$app->run();
+
+
