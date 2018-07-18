@@ -9,7 +9,6 @@ use App\Services\UnzipService;
 use App\Services\ParseService;
 use GuzzleHttp\Client;
 
-
 require __DIR__ . '/vendor/autoload.php';
 
 $app = new Application;

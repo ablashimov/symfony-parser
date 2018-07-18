@@ -11,10 +11,6 @@ class DownloadService
      */
     private $client;
 
-    /**
-     * DownloadService constructor.
-     * @param Client $client
-     */
     public function __construct(Client $client)
     {
         $this->client = $client;
@@ -22,9 +18,7 @@ class DownloadService
 
     public function download(string $url): string
     {
-        $response = $this->client->request('get', $url, [
-//            'progress' => [$this, 'onProgress'],
-        ]);
+        $response = $this->client->request('get', $url);
 
         return $response->getBody()->getContents();
     }

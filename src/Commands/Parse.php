@@ -57,7 +57,7 @@ class Parse extends Command
         $this->urls = $input->getArgument('url');
         foreach ($this->urls as $url) {
             $filename = str_replace('/', '-', $url);
-            $url = 'https://github.com/' . $url . '/zipball/master/';
+            $url = 'https://github.com/' . $url . '/zipball/master';
             $zipPath = $this->writer->writeToFile($filename, $this->downloader->download($url));
             $this->unzip->extractZip($zipPath);
             unlink($zipPath);
@@ -70,11 +70,9 @@ class Parse extends Command
         if ($total <= 0) {
             return;
         }
-
         if (!$this->progressBar) {
             $this->progressBar = $this->createProgressBar(100);
         }
-
         $this->progressBar->setProgress(100 / $total * $downloaded);
     }
 

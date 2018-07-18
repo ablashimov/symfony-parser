@@ -4,11 +4,9 @@ namespace App\Services;
 
 class FileWriterService
 {
-    const DOWNLOADS_PATH = 'storage';
-
     public function writeToFile(string $filename, string $content): string
     {
-        $path = $this->getPath($filename);
+        $path = $filename;
         if (!file_exists($dir = dirname($path))) {
             mkdir($dir);
         }
@@ -17,10 +15,5 @@ class FileWriterService
         }
 
         return $path;
-    }
-
-    private function getPath(string $filename): string
-    {
-        return static::DOWNLOADS_PATH . $filename;
     }
 }
