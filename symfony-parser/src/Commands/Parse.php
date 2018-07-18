@@ -2,17 +2,20 @@
 
 namespace App\Commands;
 
-use App\Services\ParseService;
-use App\Services\UnzipService;
 use App\Services\DownloadService;
 use App\Services\FileWriterService;
+use App\Services\ParseService;
+use App\Services\UnzipService;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class Parse extends Command
 {
+    /** @var ProgressBar */
+    protected $progressBar;
 
     /** @var OutputInterface */
     protected $output;
@@ -34,7 +37,7 @@ class Parse extends Command
 
     public function __construct($name = null, DownloadService $downloader, FileWriterService $writer, UnzipService $unzip, ParseService $parse)
     {
-        parent::__construct();
+        parent::__construct($name);
         $this->downloader = $downloader;
         $this->writer = $writer;
         $this->unzip = $unzip;
@@ -45,26 +48,43 @@ class Parse extends Command
     {
         $this->setName('parse-repositories')
             ->setDescription('Downloads repository from github')
-            ->addArgument('urls', InputArgument::IS_ARRAY, 'Urls to download');
+            ->addArgument('url', InputArgument::IS_ARRAY, 'Url to download');
     }
 
     public function execute(InputInterface $input, OutputInterface $output): void
     {
         $this->output = $output;
-        $this->urls = $input->getArgument('urls');
+        $this->urls = $input->getArgument('url');
         foreach ($this->urls as $url) {
             $filename = str_replace('/', '-', $url);
-            $zipPath = $this->writer->writeToFile($filename, $this->downloader->download($this->getUrl($url)));
+            $url = 'https://github.com/' . $url . '/zipball/master';
+            $zipPath = $this->writer->writeToFile($filename, $this->downloader->download($url));
             $this->unzip->extractZip($zipPath);
             unlink($zipPath);
             $this->parse->findAndParseFiles($this->output);
         }
     }
 
-    public function getUrl(string $url): string
+    public function onProgress(int $total, int $downloaded): void
     {
-        return $url = 'https://github.com/' . $url . '/zipball/master';
+        if ($total <= 0) {
+            return;
+        }
+        if (!$this->progressBar) {
+            $this->progressBar = $this->createProgressBar(100);
+        }
+        $this->progressBar->setProgress(100 / $total * $downloaded);
     }
 
+    public function createProgressBar(int $max): ProgressBar
+    {
+        $bar = new ProgressBar($this->output, $max);
 
+        $bar->setBarCharacter('<fg=green>·</>');
+        $bar->setEmptyBarCharacter('<fg=red>·</>');
+        $bar->setProgressCharacter('<fg=green>ᗧ</>');
+        $bar->setFormat("%current:8s%/%max:-8s% %bar% %percent:5s%% %elapsed:7s%/%estimated:-7s% %memory%");
+
+        return $bar;
+    }
 }

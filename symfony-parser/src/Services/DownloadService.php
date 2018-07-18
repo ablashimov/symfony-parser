@@ -3,14 +3,15 @@
 namespace App\Services;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\ClientInterface;
 
 class DownloadService
 {
-    /** @var Client */
+    /**
+     * @var Client
+     */
     private $client;
 
-    public function __construct(ClientInterface $client)
+    public function __construct(Client $client)
     {
         $this->client = $client;
     }
