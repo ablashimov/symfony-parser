@@ -1,17 +1,18 @@
 <?php
 
 namespace App\Services;
-use ZipArchive;
 
+use ZipArchive;
 
 class UnzipService
 {
-    public function extractZip($filename)
+    public function extractZip(string $filename): void
     {
         $zip = new ZipArchive();
         if ($zip->open($filename) === true) {
             $zip->extractTo("repositories/");
             $zip->close();
+
             return;
         }
 

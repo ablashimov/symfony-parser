@@ -61,7 +61,7 @@ class Parse extends Command
             $zipPath = $this->writer->writeToFile($filename, $this->downloader->download($url));
             $this->unzip->extractZip($zipPath);
             unlink($zipPath);
-            $this->parse->findAndParseFiles();
+            $this->parse->findAndParseFiles($this->output);
         }
     }
 

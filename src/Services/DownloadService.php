@@ -20,7 +20,7 @@ class DownloadService
         $this->client = $client;
     }
 
-    public function download($url): string
+    public function download(string $url): string
     {
         $response = $this->client->request('get', $url, [
 //            'progress' => [$this, 'onProgress'],

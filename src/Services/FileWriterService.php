@@ -6,7 +6,7 @@ class FileWriterService
 {
     const DOWNLOADS_PATH = 'storage';
 
-    public function writeToFile(string $filename, string $content)
+    public function writeToFile(string $filename, string $content): string
     {
         $path = $this->getPath($filename);
         if (!file_exists($dir = dirname($path))) {
