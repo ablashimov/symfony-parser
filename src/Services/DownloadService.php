@@ -15,9 +15,9 @@ class DownloadService
         $this->client = $client;
     }
 
-    public function download(string $url): string
+    public function download(string $url, callable $progress): string
     {
-        $response = $this->client->request('get', $url);
+        $response = $this->client->request('get', $url,['progress' => $progress]);
 
         return $response->getBody()->getContents();
     }
