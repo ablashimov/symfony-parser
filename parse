@@ -13,8 +13,12 @@ use App\Services\FileWriterService;
 require __DIR__ . '/vendor/autoload.php';
 
 $app = new Application;
+$download = new DownloadService(new Client());
+$fileWriter = new FileWriterService();
+$unzip = new UnzipService();
+$parse =  new ParseService();
 
-$app->add(new Parse(null, new DownloadService(new Client), new FileWriterService(), new UnzipService(), new ParseService()));
+$app->add(new Parse(null,$download,$fileWriter,$unzip,$parse));
 
 $app->run();
 
